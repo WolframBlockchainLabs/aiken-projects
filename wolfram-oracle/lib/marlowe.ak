@@ -7,10 +7,10 @@ pub type InputContent {
   IChoice(ChoiceId, Data)
 }
 
-pub type Input {
+pub type MarloweInput {
   NormalInput(InputContent)
   MerkleizedInput(InputContent, Data, Data)
 }
 
 pub type ExpectedRedeemerStructure =
-  List<Input>
+  List<MarloweInput>
