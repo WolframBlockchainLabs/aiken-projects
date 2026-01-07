@@ -11,7 +11,8 @@ use marlowe.{
   ChoiceId, ExpectedRedeemerStructure, IChoice, MerkleizedInput, NormalInput,
 }
 use mocktail.{
-  complete, invalid_hereafter, mock_script_address, mocktail_tx, tx_in,
+  add_redeemer, complete, invalid_hereafter, mock_script_address, mocktail_tx,
+  tx_in,
 }
 use mocktail/virgin_key_hash.{mock_pub_key_hash}
 use mocktail/virgin_output_reference.{mock_tx_hash, mock_utxo_ref}
@@ -149,6 +150,13 @@ test oracle_validator_Execute() {
       beneficiary: mock_pub_key_hash(0),
     )
 
+  let marloweInput =
+    NormalInput(
+      IChoice(ChoiceId("price_feed", "something"), "AnotherSomething"),
+    )
+  let marloweRedeemer = [marloweInput]
+  let marlowe_redeemer_as_data: Data = marloweRedeemer
+
   let tx =
     mocktail_tx()
       // Add the Marlowe input that the validator is checking for
@@ -162,6 +170,18 @@ test oracle_validator_Execute() {
       // Set validity range BEFORE the deadline (deadline - 1)
       |> invalid_hereafter(True, deadline - 1)
       |> complete()
+      |> add_redeemer(
+          True,
+          Pair(
+            Spend(
+              OutputReference {
+                transaction_id: marlowe_tx_id,
+                output_index: marlowe_tx_idx,
+              },
+            ),
+            marlowe_redeemer_as_data,
+          ),
+        )
 
   let redeemer = Execute
   let own_ref = mock_utxo_ref(1, 0)
