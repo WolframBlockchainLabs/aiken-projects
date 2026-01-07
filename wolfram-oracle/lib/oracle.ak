@@ -1,7 +1,7 @@
 use aiken/crypto.{VerificationKeyHash}
 use cardano/transaction.{TransactionId}
 
-pub type Datum {
+pub type WolframOracleDatum {
   marloweTxId: TransactionId,
   // So far, I'm using the previous definition of the datum.
   marloweTxIdx: Int,
@@ -12,7 +12,7 @@ pub type Datum {
   beneficiary: VerificationKeyHash,
 }
 
-pub type Redeemer {
+pub type WolframOracleRedeemer {
   Execute
   Reclaim
 }
